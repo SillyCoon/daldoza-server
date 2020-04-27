@@ -6,7 +6,7 @@ const http = require('http');
     const clients = new Set();
 
     http.createServer((req, res) => {
-        wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnect.bind({clients}))
+        wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnect.bind({ clients }))
     }).listen(8000, () => {
         console.log('listen: 8000');
     });
@@ -20,19 +20,19 @@ function onSocketConnect(ws) {
     } else {
         this.clients.add(ws);
         ws.on('message', (message) => {
-            handleMessage(message, this.clients)
+            handleMessage(message, this.clients, ws)
         });
 
         ws.on('close', () => {
-            clients.delete(ws);
+            this.clients.delete(ws);
         })
     }
 }
 
-function handleMessage(message, clients) {
+function handleMessage(message, clients, currentClient) {
     console.log(message);
     clients.forEach(client => {
-        if (client !== ws && client.readyState === ws.OPEN) {
+        if (client !== currentClient && client.readyState === ws.OPEN) {
             client.send(message);
         }
     });
