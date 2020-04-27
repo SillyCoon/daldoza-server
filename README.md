@@ -1,2 +1,2 @@
 # daldoza-server
-# Multiplayer via ws
+ Multiplayer via ws
