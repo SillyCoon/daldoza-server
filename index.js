@@ -1,17 +1,23 @@
 const ws = new require('ws');
-const wss = new ws.Server({ noServer: true });
 const http = require('http');
+const express = require('express');
+const app = express();
 
-(function StartServer() {
-    const clients = new Set();
+const server = http.createServer(app);
+const wss = new ws.Server({ server });
+const clients = new Set();
 
-    http.createServer((req, res) => {
-        wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnect.bind({ clients }))
-    }).listen(8000, () => {
-        console.log('listen: 8000');
-    });
+wss.on('connection', onSocketConnect.bind({clients}));
 
-})()
+
+server.listen(8000, () => {
+    console.log(`listen: ${server.address().port}`);
+});
+
+app.get('/health', (req, res) => {
+    res.send('OK');
+});
+
 
 function onSocketConnect(ws) {
     if (this.clients.size > 2) {
