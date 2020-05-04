@@ -1,7 +1,8 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "server for daldoza game",
+  "repository": "https://github.com/SillyCoon/daldoza-server.git",
   "main": "index.js",
   "scripts": {
     "start": "nodemon --inspect index.js",

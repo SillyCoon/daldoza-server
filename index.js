@@ -31,11 +31,25 @@ function onSocketConnect(ws) {
 
 function handleMessage(message, clients, currentClient) {
     console.log(message);
+    message = JSON.parse(message);
+    if (message.type === 'order') {
+        assignColorToOtherPlayerFor(currentClient);
+    }
     clients.forEach(client => {
         if (client !== currentClient && client.readyState === ws.OPEN) {
-            client.send(message);
+            client.send(JSON.stringify({ type: 'command', value: message }));
         }
     });
+
+    function assignColorToOtherPlayerFor(client) {
+        let order;
+        if (clients.size == 2) {
+            order = 1;
+        } else {
+            order = 2;
+        }
+        client.send(JSON.stringify({ type: 'order', value: order}));
+    }
 }
 
 
